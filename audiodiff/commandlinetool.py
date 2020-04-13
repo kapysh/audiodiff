@@ -161,17 +161,17 @@ def diff_dirs(path1, path2, options):
     ret = 0
     cnames1 = _cnames(path1)
     cnames2 = _cnames(path2)
-    for cname in sorted(set(cnames1.iterkeys()) | set(cnames2.iterkeys())):
+    for cname in sorted(set(cnames1.keys()) | set(cnames2.keys())):
         names1 = cnames1.get(cname)
         names2 = cnames2.get(cname)
         if not names1:
             for name in names2:
-                _print(u'Only in {0}: {1}'.format(_decode_path(path2),
+                _print('Only in {0}: {1}'.format(_decode_path(path2),
                                                   _decode_path(name)))
                 ret = max(ret, 1)
         elif not names2:
             for name in names1:
-                _print(u'Only in {0}: {1}'.format(_decode_path(path1),
+                _print('Only in {0}: {1}'.format(_decode_path(path1),
                                                   _decode_path(name)))
                 ret = max(ret, 1)
         else:
@@ -198,11 +198,11 @@ def _cnames(d):
 def diff_streams(path1, path2, verbose=False, ffmpeg_bin=None):
     """Prints whether the two audio files' streams differ or are identical."""
     if not audio_equal(path1, path2, ffmpeg_bin):
-        _print(u'Audio streams in {0} and {1} differ'.format(
+        _print('Audio streams in {0} and {1} differ'.format(
             _decode_path(path1), _decode_path(path2)))
         return 1
     elif verbose:
-        _print(u'Audio streams in {0} and {1} are identical'.format(
+        _print('Audio streams in {0} and {1} are identical'.format(
             _decode_path(path1), _decode_path(path2)))
     return 0
 
@@ -213,25 +213,25 @@ def diff_tags(path1, path2, verbose=False, brief=False):
     tags2 = tags(path2)
     if tags1 == tags2:
         if verbose:
-            _print(u'Tags in {0} and {1} are identical'.format(
+            _print('Tags in {0} and {1} are identical'.format(
                 _decode_path(path1), _decode_path(path2)))
         return 0
     if brief:
-        _print(u'Tags in {0} and {1} differ'.format(
+        _print('Tags in {0} and {1} differ'.format(
             _decode_path(path1), _decode_path(path2)))
         return 1
     data = _compare_dicts(tags1, tags2)
     colors = {'-': 'red', '+': 'green', ' ': None}
-    _print(colored(u'--- {0}'.format(_decode_path(path1)), colors['-']))
-    _print(colored(u'+++ {0}'.format(_decode_path(path2)), colors['+']))
+    _print(colored('--- {0}'.format(_decode_path(path1)), colors['-']))
+    _print(colored('+++ {0}'.format(_decode_path(path2)), colors['+']))
     for sign, key, value in data:
         if sign == ' ' and not verbose:
             continue
-        if not isinstance(value, unicode):
+        if not isinstance(value, str):
             value = repr(value)
         if len(value) > 100:
             value = value[:92] + '...' + value[-5:]
-        _print(colored(u'{0}{1}: {2}'.format(sign, key, value), colors[sign]))
+        _print(colored('{0}{1}: {2}'.format(sign, key, value), colors[sign]))
     return 1
 
 
@@ -249,8 +249,8 @@ def _compare_dicts(dict1, dict2):
          ('+', 'd', 7)]
 
     """
-    keys1 = set(dict1.iterkeys())
-    keys2 = set(dict2.iterkeys())
+    keys1 = set(dict1.keys())
+    keys2 = set(dict2.keys())
     data = []
     for key in keys1 - keys2:
         data.append(('-', key, dict1[key]))
@@ -269,11 +269,11 @@ def _compare_dicts(dict1, dict2):
 def diff_binary(path1, path2, verbose=False):
     """Prints whether the two non-audio files differ or are identical."""
     if not equal(path1, path2):
-        _print(u'Files {0} and {1} differ'.format(_decode_path(path1),
+        _print('Files {0} and {1} differ'.format(_decode_path(path1),
                                                   _decode_path(path2)))
         return 1
     elif verbose:
-        _print(u'Files {0} and {1} are identical'.format(_decode_path(path1),
+        _print('Files {0} and {1} are identical'.format(_decode_path(path1),
                                                          _decode_path(path2)))
     return 0
 
@@ -281,12 +281,12 @@ def diff_binary(path1, path2, verbose=False):
 # Due to a bug in Sphinx, we cannot use from __future__ import print_function
 # https://bitbucket.org/birkenfeld/sphinx/issue/1385/sphinxpycodemoduleanalyzer-fails-with
 def _print(message):
-    print message.encode(_encoding_for(sys.stdout), 'replace')
+    print(message.encode(_encoding_for(sys.stdout), 'replace'))
 
 
 def _print_error(message):
-    print >>sys.stderr, '{0}: {1}'.format(
-        parser.prog, message.encode(_encoding_for(sys.stderr), 'replace'))
+    print('{0}: {1}'.format(
+        parser.prog, message.encode(_encoding_for(sys.stderr), 'replace')), file=sys.stderr)
 
 
 def _encoding_for(file):

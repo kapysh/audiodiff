@@ -124,7 +124,7 @@ def tags(name):
     if get_extension(name) == 'wav':
         return {}
     return dict((key, _unwrap(value))
-                for key, value in mutagenwrapper.read_tags(name).iteritems()
+                for key, value in mutagenwrapper.read_tags(name).items()
                 if key != 'encodedby')
 
 
