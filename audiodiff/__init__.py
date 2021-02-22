@@ -76,10 +76,11 @@ def checksum(name, ffmpeg_bin=None):
         '-f', 's24le',
         '-',
     ]
-
+   
+    # BIG TODO - if ffpmg is going to fail just let it
     # Check if the file is readable and raise an appropriate exception if not
-    with open(name) as f:
-        f.read(1)
+    #with open(name) as f:
+    #    f.read(1)
 
     with open(os.devnull, 'wb') as fnull:
         proc = subprocess.Popen(args, stdout=subprocess.PIPE,
